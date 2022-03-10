@@ -66,7 +66,6 @@ public class PathFinder : MonoBehaviour
 
                     foreach(string path_tile_name in path )
                     {
-                        Debug.Log(path_tile_name);
                         GameObject.Find(path_tile_name).GetComponent<Renderer>().material.color = Color.black;
                     }
 
