@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using UnityEngine;
 using PriorityQueue;
+
 public class Node
 {
     public int i, j;
@@ -24,12 +25,12 @@ public class Node
     }
 }
 
-
 public class FieldConstructor : MonoBehaviour
 {
     public int cells = 10;
     public int grid_width = 10; 
     public int grid_height = 10;  
+    public GameObject default_tile;
 
     public Dictionary<string, Node> graph; 
 
@@ -40,22 +41,18 @@ public class FieldConstructor : MonoBehaviour
         Vector3.right
     };
 
-    public GameObject tile;
-    List<GameObject> tiles = new List<GameObject>() ;
-
     void Start()
     {
         graph = new Dictionary<string, Node>(); 
-        // UnityEngine.Random rand = new UnityEngine.Random();
         for (int i=0 ; i < grid_width; i++)
         {
             for (int j=0 ; j < grid_height; j++ )
             {
                 Vector3 node_position = Vector3.right * i + Vector3.forward * j;
                 
-                GameObject new_tile = (GameObject)Instantiate (tile,
-                                                            node_position, 
-                                                            Quaternion.identity);
+                GameObject new_tile = (GameObject)Instantiate (default_tile,
+                                                               node_position, 
+                                                               Quaternion.identity);
 
                 new_tile.transform.localScale *= 0.95f;
                 new_tile.transform.parent = this.gameObject.transform;
@@ -64,9 +61,6 @@ public class FieldConstructor : MonoBehaviour
                 new_tile.GetComponent<Renderer>().material.color = Color.magenta * (float)node_cost;
                 Node new_node = new Node(i, j, new_tile, node_cost);
                 graph[new_tile.name] = new_node; 
-
-
-                tiles.Add(new_tile);
             }
         }
 
@@ -97,30 +91,9 @@ public class FieldConstructor : MonoBehaviour
         return new Vector3(float.Parse(xyz[0]), float.Parse(xyz[1]), float.Parse(xyz[2])); 
     }
 
-    private string ijToName(int i, int j)
-    {
-        return i.ToString() + "_" + j.ToString();
-    }
-
-    private int TileNameToIndex(string tile_name)
-    {
-        var tile_tuple = TileNameToTuple(tile_name);
-        return tile_tuple.Item1 * grid_height + tile_tuple.Item2;
-    }
-
-    private (int, int) TileNameToTuple(string tile_name)
-    {
-        string[] substrings = tile_name.Split('_');
-        return (int.Parse(substrings[0]) , int.Parse(substrings[1]));
-    } 
-
     public List<string> GetPath(string start_node_name, string goal_node_name)
     {
         return dijkstra_search(start_node_name, goal_node_name); 
-    }
-
-    void Update()
-    {
     }
 
     List<string> breadth_first_search(string start_node_name, string goal_node_name)
@@ -186,7 +159,6 @@ public class FieldConstructor : MonoBehaviour
                 if (!cost_so_far.Contains(next_node.game_object.name)
                     || new_cost < (double)cost_so_far[next_node.game_object.name])
                 {
-                    Debug.Log(new_cost);
                     cost_so_far[next_node.game_object.name] = new_cost; 
                     double priority = new_cost; 
                     frontier.Enqueue(priority, next_node.game_object.name);
@@ -205,6 +177,5 @@ public class FieldConstructor : MonoBehaviour
         path.Add(start_node_name);
         path.Reverse();
         return path;
- 
     }
 }
