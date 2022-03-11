@@ -93,7 +93,8 @@ public class FieldConstructor : MonoBehaviour
 
     public List<string> GetPath(string start_node_name, string goal_node_name)
     {
-        return dijkstra_search(start_node_name, goal_node_name); 
+        return a_star_search(start_node_name, goal_node_name);
+        // return dijkstra_search(start_node_name, goal_node_name); 
     }
 
     List<string> breadth_first_search(string start_node_name, string goal_node_name)
@@ -178,4 +179,62 @@ public class FieldConstructor : MonoBehaviour
         path.Reverse();
         return path;
     }
+
+    double heuristic(Node a, Node b)
+    {
+        Vector3 difference = a.game_object.transform.position - b.game_object.transform.position;
+        return difference.magnitude;
+    }
+
+
+    List<string> a_star_search(string start_node_name, 
+                         string goal_node_name)
+    {
+        Node goal_node = graph[goal_node_name];
+
+        PriorityQueue<string> frontier = new PriorityQueue<string>();
+        frontier.Enqueue(0.0, start_node_name);
+        OrderedDictionary came_from = new OrderedDictionary(); 
+        came_from[start_node_name] = null;
+        OrderedDictionary cost_so_far = new OrderedDictionary(); 
+        cost_so_far[start_node_name] = 0.0;
+        while (frontier.Count != 0 )
+        {
+            string current_node_name = frontier.Dequeue();
+            if (String.Equals(current_node_name, goal_node_name))
+            {
+                break;
+            }
+
+            List<Node> neighbors = graph[current_node_name].neighbors;
+            List<double> edge_weights = graph[current_node_name].edge_weights;
+            for(int i = 0; i < neighbors.Count; i++)
+            {
+                Node next_node = neighbors[i];
+                double edge_weight = edge_weights[i];
+                double new_cost = (double)cost_so_far[current_node_name] + edge_weight;
+                if (!cost_so_far.Contains(next_node.game_object.name)
+                    || new_cost < (double)cost_so_far[next_node.game_object.name])
+                {
+                    cost_so_far[next_node.game_object.name] = new_cost; 
+                    double priority = new_cost + heuristic(next_node, goal_node); 
+                    frontier.Enqueue(priority, next_node.game_object.name);
+                    came_from[next_node.game_object.name] = current_node_name; 
+                }
+            }
+        }
+
+        List<string> path = new List<string>();
+        string current = goal_node_name; 
+        while (!String.Equals(current, start_node_name))
+        {
+            path.Add(current);
+            current = came_from[current].ToString();
+        }
+        path.Add(start_node_name);
+        path.Reverse();
+        return path;
+    }
+
+
 }
