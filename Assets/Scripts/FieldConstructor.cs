@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using UnityEngine;
 using PriorityQueue;
+using System.IO;
 
 public class Node
 {
@@ -41,24 +42,50 @@ public class FieldConstructor : MonoBehaviour
         Vector3.right
     };
 
+    private List<GameObject> loaded_tiles_;
+
+    public List<GameObject> GetGameObjectsFromDirectory(string directory_path)
+    {
+        var tiles = Resources.LoadAll(directory_path, typeof(GameObject));
+        List<GameObject> loaded_tiles = new List<GameObject>();
+        foreach(var tile in tiles)
+        {
+            loaded_tiles.Add((GameObject)tile);
+        }
+        return loaded_tiles;
+    }
+
     void Start()
     {
+        loaded_tiles_ = GetGameObjectsFromDirectory("tiles");
+
         graph = new Dictionary<string, Node>(); 
         for (int i=0 ; i < grid_width; i++)
         {
             for (int j=0 ; j < grid_height; j++ )
             {
                 Vector3 node_position = Vector3.right * i + Vector3.forward * j;
-                
-                GameObject new_tile = (GameObject)Instantiate (default_tile,
-                                                               node_position, 
-                                                               Quaternion.identity);
+                GameObject new_tile = null;
+                if(loaded_tiles_.Count != 0)
+                {
+                    int random_tile_index = UnityEngine.Random.Range(0, loaded_tiles_.Count);
+                    new_tile = (GameObject)Instantiate (loaded_tiles_[random_tile_index],
+                                                        node_position, 
+                                                        Quaternion.identity);
+                    new_tile.AddComponent<BoxCollider>();                                                        
+
+                }
+                else{
+                    new_tile = (GameObject)Instantiate (default_tile,
+                                                                node_position, 
+                                                                Quaternion.identity);
+                }                
 
                 new_tile.transform.localScale *= 0.95f;
                 new_tile.transform.parent = this.gameObject.transform;
                 new_tile.name = PositionToName(node_position); 
                 double node_cost = UnityEngine.Random.value;
-                new_tile.GetComponent<Renderer>().material.color = Color.magenta * (float)node_cost;
+                // new_tile.GetComponent<Renderer>().material.color = Color.magenta * (float)node_cost;
                 Node new_node = new Node(i, j, new_tile, node_cost);
                 graph[new_tile.name] = new_node; 
             }
