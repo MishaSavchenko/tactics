@@ -6,11 +6,10 @@ public class CameraMovement : MonoBehaviour
 {
     // Start is called before the first frame update
 
-
+    Camera camera = null;
     void Start()
     {
-
-        // Debug.Log(transform.position);
+        camera = GameObject.Find("Main Camera").GetComponent<Camera>();
     }
 
     public float speed = 5.0f;
@@ -34,30 +33,11 @@ public class CameraMovement : MonoBehaviour
         }
 
 
-        Camera c = GameObject.Find("Main Camera").GetComponent<Camera>();
-        c.orthographicSize += 0.1f * Input.mouseScrollDelta.y;
-        if (c.orthographicSize <= 0.5)
+        camera.orthographicSize += 0.1f * Input.mouseScrollDelta.y;
+        if (camera.orthographicSize <= 0.5)
         {
-            c.orthographicSize = 0.5f;
+            camera.orthographicSize = 0.5f;
         }
-        // c.orthographicSize += 0.1f * Input.mouseScrollDelta.y;
-        // Camera c = GetComponentsInChildren(typeof(Camera), true)[0]; //.orthographicSize += 0.1f * Input.mouseScrollDelta.y;
-        // Vector3 zoom_transform = new Vector3(0.0f, 0.0f, Input.mouseScrollDelta.y); 
-        // if(Input.mouseScrollDelta.y > 0)
-        // {
-        // transform.localPosition += transform.rotation * zoom_transform;  
-        // }
-        // else if(Input.mouseScrollDelta.y < 0)
-        // {
-        //     transform.localPosition *= -1.05f;  
-        // }
-        // transform.position += zoom_transform;
-        // Debug.Log(Input.mouseScrollDelta);
-        // if( Input.mouseScrollDelta)
-        // {
-        //     Debug.Log(Input.mouseScrollDelta);
-        // }
-        // pos.y += Input.mouseScrollDelta.y * scale;
     }   
 }
 
