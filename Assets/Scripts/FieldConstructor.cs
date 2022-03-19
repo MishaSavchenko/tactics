@@ -224,6 +224,61 @@ public class FieldConstructor : MonoBehaviour
         return path;
     }
 
+
+
+    public List<string> get_available_goals(string start_node_name, 
+                                                  double cutoff_cost)
+    {
+        PriorityQueue<string> frontier = new PriorityQueue<string>();
+        frontier.Enqueue(0.0, start_node_name);
+        OrderedDictionary came_from = new OrderedDictionary(); 
+        came_from[start_node_name] = null;
+        OrderedDictionary cost_so_far = new OrderedDictionary(); 
+        cost_so_far[start_node_name] = 0.0;
+        while (frontier.Count != 0 )
+        {
+            string current_node_name = frontier.Dequeue();
+
+            List<Node> neighbors = graph[current_node_name].neighbors;
+            List<double> edge_weights = graph[current_node_name].edge_weights;
+            for(int i = 0; i < neighbors.Count; i++)
+            {
+                Node next_node = neighbors[i];
+                double edge_weight = edge_weights[i];
+                double new_cost = (double)cost_so_far[current_node_name] + edge_weight;
+
+                if(new_cost > cutoff_cost)
+                {
+                    continue;
+                }
+                if (next_node.occupant != null)
+                {
+                    continue;
+                }
+                if (!cost_so_far.Contains(next_node.game_object.name)
+                    || new_cost < (double)cost_so_far[next_node.game_object.name])
+                {
+                    cost_so_far[next_node.game_object.name] = new_cost; 
+                    double priority = new_cost; 
+                    frontier.Enqueue(priority, next_node.game_object.name);
+                    came_from[next_node.game_object.name] = current_node_name; 
+                }
+            }
+        }
+
+        List<string> available_goals = new List<string>();
+        foreach(DictionaryEntry node_cost in cost_so_far)
+        {
+            if((double)node_cost.Value <= cutoff_cost)
+            {
+                available_goals.Add(node_cost.Key.ToString());
+            }
+        }
+
+        return available_goals;
+    }
+
+
     double heuristic(Node a, Node b)
     {
         Vector3 difference = a.game_object.transform.position - b.game_object.transform.position;
