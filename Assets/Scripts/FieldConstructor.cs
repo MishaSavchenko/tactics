@@ -34,6 +34,9 @@ public class FieldConstructor : MonoBehaviour
     public int grid_width = 10; 
     public int grid_height = 10;  
     public GameObject default_tile;
+    public GameObject default_agent;
+    
+    public int number_of_agents = 4;
 
     public Dictionary<string, Node> graph; 
 
@@ -106,6 +109,18 @@ public class FieldConstructor : MonoBehaviour
                     name_node.Value.edge_weights.Add(graph[neighbor_name].cost);
                 }
             } 
+        }
+        
+        // Create agents
+        for(int i = 0; i < number_of_agents; i++)
+        {
+            int random_tile_index = UnityEngine.Random.Range(0, graph.Count);
+            KeyValuePair<string, Node> name_node = graph.ElementAt(random_tile_index);
+
+            GameObject new_agent = (GameObject)Instantiate(default_agent,
+                                                           name_node.Value.game_object.transform.position, 
+                                                           Quaternion.identity);
+            name_node.Value.occupant = new_agent; 
         }
     }
 
