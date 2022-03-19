@@ -15,6 +15,8 @@ public class Node
     public List<Node> neighbors;
     public List<double> edge_weights;
 
+    public GameObject occupant = null;
+
     public Node(int i_, int j_, GameObject game_object_, double cost_)
     {
         i = i_;
