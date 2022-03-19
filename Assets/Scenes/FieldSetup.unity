@@ -377,9 +377,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cells: 10
-  grid_width: 20
-  grid_height: 20
+  grid_width: 12
+  grid_height: 12
   default_tile: {fileID: 390165900348377341, guid: 543d4eee588dc4145a891237c7d594cf, type: 3}
+  default_agent: {fileID: 7055026228520596227, guid: 58811fbe296f12347b119be5f903c53a, type: 3}
+  number_of_agents: 4
 --- !u!4 &2138720397
 Transform:
   m_ObjectHideFlags: 0
@@ -409,6 +411,7 @@ MonoBehaviour:
   c1: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   c2: {r: 1, g: 0, b: 0, a: 1}
   lengthOfLineRenderer: 20
+  cutoff_cost: 5
 --- !u!114 &2138720399
 MonoBehaviour:
   m_ObjectHideFlags: 0
