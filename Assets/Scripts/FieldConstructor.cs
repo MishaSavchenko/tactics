@@ -5,7 +5,7 @@ using System.Collections.Specialized;
 using UnityEngine;
 using PriorityQueue;
 using System.IO;
-
+using System.Linq;
 public class Node
 {
     public int i, j;
@@ -65,6 +65,7 @@ public class FieldConstructor : MonoBehaviour
         loaded_tiles_ = GetGameObjectsFromDirectory("tiles");
 
         graph = new Dictionary<string, Node>(); 
+        // Construct the field
         for (int i=0 ; i < grid_width; i++)
         {
             for (int j=0 ; j < grid_height; j++ )
@@ -91,11 +92,12 @@ public class FieldConstructor : MonoBehaviour
                 new_tile.name = PositionToName(node_position); 
                 double node_cost = UnityEngine.Random.value;
                 // new_tile.GetComponent<Renderer>().material.color = Color.magenta * (float)node_cost;
-                Node new_node = new Node(i, j, new_tile, node_cost);
+                Node new_node = new Node(i, j, new_tile, 1.0);
                 graph[new_tile.name] = new_node; 
             }
         }
 
+        // Connect nodes with neighbors
         foreach (KeyValuePair<string, Node> name_node in graph)
         {
             Vector3 node_position = name_node.Value.game_object.transform.position;
@@ -178,7 +180,7 @@ public class FieldConstructor : MonoBehaviour
     }
 
     List<string> dijkstra_search(string start_node_name, 
-                         string goal_node_name)
+                                 string goal_node_name)
     {
         PriorityQueue<string> frontier = new PriorityQueue<string>();
         frontier.Enqueue(0.0, start_node_name);
@@ -312,6 +314,10 @@ public class FieldConstructor : MonoBehaviour
                 Node next_node = neighbors[i];
                 double edge_weight = edge_weights[i];
                 double new_cost = (double)cost_so_far[current_node_name] + edge_weight;
+                if (next_node.occupant != null)
+                {
+                    continue;
+                }
                 if (!cost_so_far.Contains(next_node.game_object.name)
                     || new_cost < (double)cost_so_far[next_node.game_object.name])
                 {
