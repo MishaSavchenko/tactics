@@ -27,7 +27,7 @@ public class FieldEventTest : MonoBehaviour {
 
     void SomeFunction ()
     {
-        Debug.Log ("Some Function was called!");
+        // Debug.Log ("Some Function was called!");
     }
 
     void SomeOtherFunction ()
