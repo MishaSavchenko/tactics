@@ -18,6 +18,8 @@ public class PathFinder : MonoBehaviour
 
     private LineRenderer line;
 
+    private AgentInterfaceManager agent_interface_manager;
+
     void Start()
     {
         field_constructor = GameObject.FindObjectOfType<FieldConstructor>();
@@ -30,6 +32,8 @@ public class PathFinder : MonoBehaviour
         line.endWidth = 0.1f;
         line.startColor = c1;
         line.endColor = c2;
+
+        agent_interface_manager = GameObject.Find("AgentInterfaceManager").GetComponent<AgentInterfaceManager>();
     }
 
     // Creates a line renderer that follows a Sin() function
@@ -40,18 +44,19 @@ public class PathFinder : MonoBehaviour
     public double cutoff_cost = 4.0;
 
     private List<string> available_goals = new List<string>();
+    private List<string> target_goals = new List<string>();
 
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0)) {
-            CastRay();
-        }       
+        // if (Input.GetMouseButtonDown(0)) {
+        //     CastRay();
+        // }       
     }
 
     void DrawArrow(List<Vector3> path)
     {
-        line.SetVertexCount(path.Count);
+        line.positionCount = path.Count;
         Vector3 prev_position = path[0];
         Vector3 line_offset = new Vector3(0.0f,0.15f,0.0f);
         line.SetPosition(0, prev_position + line_offset);
@@ -72,6 +77,13 @@ public class PathFinder : MonoBehaviour
         }
         available_goals.Clear();
 
+        foreach(string target_goal_name in target_goals)
+        {
+            GameObject target_goal_tile = GameObject.Find(target_goal_name);
+            target_goal_tile.GetComponent<Renderer>().material.color = Color.white;
+        }
+        target_goals.Clear();
+
         if(start)
         {
             start_tile.GetComponent<Renderer>().material.color = Color.white;
@@ -84,6 +96,8 @@ public class PathFinder : MonoBehaviour
             goal_tile = null;
         }
     }
+
+    public string active_team; 
 
     void CastRay() 
     {
@@ -104,7 +118,6 @@ public class PathFinder : MonoBehaviour
                 {
                     start_tile.GetComponent<Renderer>().material.color = Color.green; 
                     goal_tile.GetComponent<Renderer>().material.color = Color.green;
-                    FieldEventManager.TriggerEvent ("test");
                     path = field_constructor.GetPath(start_tile.name, goal_tile.name);
 
                     List<Vector3> tile_path = new List<Vector3>();
@@ -120,6 +133,7 @@ public class PathFinder : MonoBehaviour
                     field_constructor.graph[goal_tile.name].occupant = agent;
                     field_constructor.graph[start_tile.name].occupant = null;
 
+                    FieldEventManager.TriggerEvent("turn_end");
                     DrawArrow(tile_path);
                     CleanUpTiles(true, true);
                 }
@@ -147,21 +161,62 @@ public class PathFinder : MonoBehaviour
                         goal_tile = GameObject.Find(tile_name);
                         goal_tile.GetComponent<Renderer>().material.color = Color.red; 
                     }
+                    // else if( target_goals.Contains(tile_name))
+                    // {
+                    //     GameObject agent = field_constructor.graph[tile_name].occupant;
+                    //     if (!agent.team_name.Equals(active_team))
+                    //     {
+                            
+                    //     } 
+                    //     else
+                    //     {
+                    //         // Debug.Log("Same ")
+                    //     }
+           
+                    // }
                 }
             }
-            else{
-                if (field_constructor.graph[tile_name].occupant != null)
-                {
-                    start_tile = GameObject.Find(tile_name);
-                    start_tile.GetComponent<Renderer>().material.color = Color.yellow; 
-                    available_goals = field_constructor.get_available_goals(start_tile.name, cutoff_cost);
-                    foreach(string available_goal_name in available_goals)
-                    {
-                        GameObject available_goal_tile = GameObject.Find(available_goal_name);
-                        available_goal_tile.GetComponent<Renderer>().material.color = Color.cyan;
-                    }
-                }
+            else
+            {
+                ChooseStartTile(tile_name);
             }
+        }
+    }
+
+    void ChooseStartTile(string tile_name)
+    {
+        // Agent must be present on the tile
+        if (!field_constructor.graph.ContainsKey(tile_name))
+        {
+            Debug.Log("dictionary does not contain "+tile_name);
+            return;
+        }
+        GameObject agent = field_constructor.graph[tile_name].occupant; 
+
+        if (agent != null && active_team.Equals(agent.GetComponent<AgentHandler>().team_name))
+        {
+            start_tile = GameObject.Find(tile_name);
+            start_tile.GetComponent<Renderer>().material.color = Color.yellow; 
+            // Get the speed of the agent 
+            double agent_speed = agent.GetComponent<AgentHandler>().speed;
+            double agent_range = agent.GetComponent<AgentHandler>().range;
+            // available_goals = field_constructor.get_available_goals(start_tile.name, agent_speed);
+            (available_goals, target_goals) = field_constructor.get_available_goals_and_targets(start_tile.name, 
+                                                                                                agent_speed, 
+                                                                                                agent_range);
+            
+            foreach(string available_goal_name in available_goals)
+            {
+                GameObject available_goal_tile = GameObject.Find(available_goal_name);
+                available_goal_tile.GetComponent<Renderer>().material.color = Color.cyan;
+            }
+            foreach(string target_goal_name in target_goals)
+            {
+                GameObject target_goal_tile = GameObject.Find(target_goal_name);
+                target_goal_tile.GetComponent<Renderer>().material.color = Color.red;
+            }
+
+            agent_interface_manager.agent_ui_event.Invoke(agent.name + " on " + tile_name);
         }
     }
 }

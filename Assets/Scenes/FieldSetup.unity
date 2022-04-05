@@ -265,7 +265,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: -3.5
+  near clip plane: -10
   far clip plane: 1000
   field of view: 60
   orthographic: 1
@@ -298,6 +298,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1726518650}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1110293451
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1110293453}
+  - component: {fileID: 1110293452}
+  m_Layer: 0
+  m_Name: AgentInterfaceManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1110293452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1110293451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 495351f38ba67724abe350c48fffe498, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agent_ui_event:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!4 &1110293453
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1110293451}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1726518649
 GameObject:
@@ -344,6 +390,52 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
+--- !u!1 &1951043311
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1951043313}
+  - component: {fileID: 1951043312}
+  m_Layer: 0
+  m_Name: FieldManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1951043312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1951043311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c18479ec67a184459712b7e390930c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agent_speed_event:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!4 &1951043313
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1951043311}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.88, y: 2.12, z: 2.9700003}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2138720395
 GameObject:
   m_ObjectHideFlags: 0
@@ -354,9 +446,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2138720397}
   - component: {fileID: 2138720399}
+  - component: {fileID: 2138720401}
   - component: {fileID: 2138720396}
   - component: {fileID: 2138720398}
-  - component: {fileID: 2138720400}
   m_Layer: 0
   m_Name: field
   m_TagString: Untagged
@@ -380,8 +472,16 @@ MonoBehaviour:
   grid_width: 12
   grid_height: 12
   default_tile: {fileID: 390165900348377341, guid: 543d4eee588dc4145a891237c7d594cf, type: 3}
-  default_agent: {fileID: 7055026228520596227, guid: 58811fbe296f12347b119be5f903c53a, type: 3}
+  default_agent: {fileID: 5186446118469033869, guid: 04feaf0b0f280874f9dc37dbb5ba38ea, type: 3}
   number_of_agents: 4
+  team_names:
+  - lost
+  - stalkers
+  agent_names:
+  - Saera
+  - Brae
+  - Xerxes
+  - Piotr
 --- !u!4 &2138720397
 Transform:
   m_ObjectHideFlags: 0
@@ -412,6 +512,7 @@ MonoBehaviour:
   c2: {r: 1, g: 0, b: 0, a: 1}
   lengthOfLineRenderer: 20
   cutoff_cost: 5
+  active_team: 
 --- !u!114 &2138720399
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -424,7 +525,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe0e8b533c889b241ab374fd33fc5c81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2138720400
+--- !u!114 &2138720401
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -433,6 +534,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2138720395}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb076bcd991c4694185e14e561dc297d, type: 3}
+  m_Script: {fileID: 11500000, guid: d52c7d7809d553f45b6aa05d838c004f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  camera_transform: {fileID: 1726518650}

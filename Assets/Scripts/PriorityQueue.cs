@@ -44,5 +44,10 @@ namespace PriorityQueue
             _pq.RemoveAt(0);
             return highestPrioritizedItem.Item2;
         }
+
+        public U AtIndex(int index)
+        {
+            return _pq[index].Item2;
+        }
     }
 }

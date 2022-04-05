@@ -9,13 +9,30 @@ public class AgentHandler : MonoBehaviour
     public float rotation_speed = 3.0f;
     int elapsedFrames = 0;
 
-    Vector3 start_position;  
+    Vector3 start_position;
     Vector3 goal_position;
 
     private GameObject primary_agent;
 
     List<Vector3> latest_path = null;
     List<Vector3>.Enumerator path_em = new List<Vector3>().GetEnumerator();
+
+    [Header("Stats")]
+    public string code_name;
+    public string team_name;
+    public double health = 100;
+    public double max_health = 100;
+    public double speed = 5; 
+    public double strength = 5;
+    public double inteligence = 5;
+    public double range = 5;
+
+    HealthBarInterface health_bar_controller;
+
+    private GameObject agent_interface; 
+    private GameObject player_view; 
+    private Camera primary_camera;
+    private GameObject health_bar;
 
     public List<GameObject> GetGameObjectsFromDirectory(string directory_path)
     {
@@ -34,6 +51,22 @@ public class AgentHandler : MonoBehaviour
 
         start_position = Vector3.zero;
         goal_position = Vector3.zero;
+
+        player_view = GameObject.Find("Main Camera").gameObject;
+        primary_camera = player_view.GetComponent<Camera>();   
+
+        health_bar = this.transform.Find("HealthBar").gameObject;
+        health_bar_controller = health_bar.GetComponent<HealthBarInterface>();
+
+        agent_interface = this.transform.Find("AgentInterface").gameObject;
+        agent_interface.SetActive(false);
+
+    }
+
+    private void UpdateHealthBar()
+    {
+        health_bar_controller.health_fraction = (float) (health/max_health);
+        AgentEventManager.TriggerEvent ("update_health_bar");
     }
 
     Vector3 QuadraticBezierCurve(Vector3 p0, Vector3 p1, Vector3 p2, float t)
@@ -52,7 +85,11 @@ public class AgentHandler : MonoBehaviour
     }
 
     void Update()
-    {
+    {   
+        // rotate ui and health bar
+        agent_interface.transform.rotation = primary_camera.transform.rotation;
+        health_bar.transform.rotation = primary_camera.transform.rotation;
+
         if (latest_path != null)
         {
             float interpolation_ratio = (float)elapsedFrames / interpolationFramesCount;
@@ -84,6 +121,36 @@ public class AgentHandler : MonoBehaviour
                     path_em.Dispose();
                 }
             }
+        }   
+    }
+
+    void OnMouseDown()
+    {
+        if(agent_interface.activeSelf)
+        {
+            agent_interface.SetActive(false);
+        }
+        else
+        {
+            agent_interface.SetActive(true);
         }
     }
+
+    public void ShowMovement()
+    {
+        Debug.Log("show movement");
+    }
+
+    // // Stats 
+    // public double max_health;
+    // public double total_speed;
+    // public List<string> actions;
+    // public List<string> bonus_actions;
+    // // State 
+    // public double current_health; 
+    // public double remaining_speed;
+    // public uint action_limit;
+    // public uint bonus_action_limit;
+
+
 }

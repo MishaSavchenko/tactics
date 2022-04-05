@@ -6,10 +6,10 @@ public class CameraMovement : MonoBehaviour
 {
     // Start is called before the first frame update
 
-    Camera camera = null;
+    Camera _camera = null;
     void Start()
     {
-        camera = GameObject.Find("Main Camera").GetComponent<Camera>();
+        _camera = GameObject.Find("Main Camera").GetComponent<Camera>();
     }
 
     public float speed = 5.0f;
@@ -33,10 +33,10 @@ public class CameraMovement : MonoBehaviour
         }
 
 
-        camera.orthographicSize += 0.1f * Input.mouseScrollDelta.y;
-        if (camera.orthographicSize <= 0.5)
+        _camera.orthographicSize += 0.1f * Input.mouseScrollDelta.y;
+        if (_camera.orthographicSize <= 0.5)
         {
-            camera.orthographicSize = 0.5f;
+            _camera.orthographicSize = 0.5f;
         }
     }   
 }

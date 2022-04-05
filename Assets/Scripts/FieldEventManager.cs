@@ -7,27 +7,27 @@ public class FieldEventManager : MonoBehaviour
 {
     private Dictionary <string, UnityEvent> eventDictionary;
 
-    private static FieldEventManager eventManager;
+    private static FieldEventManager field_event_manager;
 
-    public static FieldEventManager instance
+    public static FieldEventManager field_event_maanger_instance
     {
         get
         {
-            if (!eventManager)
+            if (!field_event_manager)
             {
-                eventManager = FindObjectOfType (typeof (FieldEventManager)) as FieldEventManager;
+                field_event_manager = FindObjectOfType (typeof (FieldEventManager)) as FieldEventManager;
 
-                if (!eventManager)
+                if (!field_event_manager)
                 {
                     Debug.LogError ("There needs to be one active EventManger script on a GameObject in your scene.");
                 }
                 else
                 {
-                    eventManager.Init (); 
+                    field_event_manager.Init (); 
                 }
             }
 
-            return eventManager;
+            return field_event_manager;
         }
     }
 
@@ -42,7 +42,7 @@ public class FieldEventManager : MonoBehaviour
     public static void StartListening (string eventName, UnityAction listener)
     {
         UnityEvent thisEvent = null;
-        if (instance.eventDictionary.TryGetValue (eventName, out thisEvent))
+        if (field_event_maanger_instance.eventDictionary.TryGetValue (eventName, out thisEvent))
         {
             thisEvent.AddListener (listener);
         } 
@@ -50,15 +50,15 @@ public class FieldEventManager : MonoBehaviour
         {
             thisEvent = new UnityEvent ();
             thisEvent.AddListener (listener);
-            instance.eventDictionary.Add (eventName, thisEvent);
+            field_event_maanger_instance.eventDictionary.Add (eventName, thisEvent);
         }
     }
 
     public static void StopListening (string eventName, UnityAction listener)
     {
-        if (eventManager == null) return;
+        if (field_event_manager == null) return;
         UnityEvent thisEvent = null;
-        if (instance.eventDictionary.TryGetValue (eventName, out thisEvent))
+        if (field_event_maanger_instance.eventDictionary.TryGetValue (eventName, out thisEvent))
         {
             thisEvent.RemoveListener (listener);
         }
@@ -67,7 +67,7 @@ public class FieldEventManager : MonoBehaviour
     public static void TriggerEvent (string eventName)
     {
         UnityEvent thisEvent = null;
-        if (instance.eventDictionary.TryGetValue (eventName, out thisEvent))
+        if (field_event_maanger_instance.eventDictionary.TryGetValue (eventName, out thisEvent))
         {
             thisEvent.Invoke ();
         }
