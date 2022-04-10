@@ -6,29 +6,8 @@ using UnityEngine;
 using PriorityQueue;
 using System.IO;
 using System.Linq;
-public class Node
-{
-    public int i, j;
-    public GameObject game_object;  
-    public double cost; 
 
-    public List<Node> neighbors;
-    public List<double> edge_weights;
-
-    public GameObject occupant = null;
-
-    public Node(int i_, int j_, GameObject game_object_, double cost_)
-    {
-        i = i_;
-        j = j_;
-        game_object = game_object_;
-        cost = cost_; 
-        neighbors = new List<Node>(); 
-        edge_weights = new List<double>(); 
-    }
-}
-
-public class FieldConstructor : MonoBehaviour
+public class MapConstructor : MonoBehaviour
 {
     public int cells = 10;
     public int grid_width = 10; 
@@ -77,7 +56,6 @@ public class FieldConstructor : MonoBehaviour
         }
     }
 
-
     void Awake()
     {
         placements = new Dictionary<string, string>(); 
@@ -113,7 +91,6 @@ public class FieldConstructor : MonoBehaviour
                 double node_cost = UnityEngine.Random.value;
                 // new_tile.GetComponent<Renderer>().material.color = Color.magenta * (float)node_cost;
                 Node new_node = new Node(i, j, new_tile, 5.0);
-                new_tile.tag = "Tile";
                 graph[new_tile.name] = new_node; 
             }
         }
@@ -134,43 +111,35 @@ public class FieldConstructor : MonoBehaviour
             } 
         }
         
-        // Create agents
-        for(int i = 0; i < number_of_agents; i++)
-        {
-            int random_tile_index = UnityEngine.Random.Range(0, graph.Count);
-            KeyValuePair<string, Node> name_node = graph.ElementAt(random_tile_index);
+        // // Create agents
+        // for(int i = 0; i < number_of_agents; i++)
+        // {
+        //     int random_tile_index = UnityEngine.Random.Range(0, graph.Count);
+        //     KeyValuePair<string, Node> name_node = graph.ElementAt(random_tile_index);
 
-            GameObject new_agent = (GameObject)Instantiate(default_agent,
-                                                           name_node.Value.game_object.transform.position, 
-                                                           Quaternion.identity);
-            // new_agent.GetComponent<AgentHandler>().team_name = team_names[i % team_names.Count];  
-            // if (new_agent.GetComponent<AgentHandler>().team_name == "stalkers")
-            // {
-            //     new_agent.GetComponent<Renderer>().material.color = Color.grey;
-            // }
-            new_agent.name = agent_names[i];
-            // new_agent.GetComponent<AgentHandler>().code_name = agent_names[i]; 
-            name_node.Value.occupant = new_agent;
+        //     GameObject new_agent = (GameObject)Instantiate(default_agent,
+        //                                                    name_node.Value.game_object.transform.position, 
+        //                                                    Quaternion.identity);
+        //     new_agent.GetComponent<AgentHandler>().team_name = team_names[i % team_names.Count];  
+        //     if (new_agent.GetComponent<AgentHandler>().team_name == "stalkers")
+        //     {
+        //         new_agent.GetComponent<Renderer>().material.color = Color.grey;
+        //     }
+        //     new_agent.name = agent_names[i];
+        //     new_agent.GetComponent<AgentHandler>().code_name = agent_names[i]; 
+        //     name_node.Value.occupant = new_agent;
 
-            //  
-            Character character = new_agent.GetComponent<Character>(); 
-            character.character_name = agent_names[i];
-            placements.Add(character.character_name, name_node.Key);            
+        //     //  
+        //     Character character = new_agent.GetComponent<Character>(); 
+        //     character.character_name = agent_names[i];
+        //     placements.Add(character.character_name, name_node.Key);            
 
-        }
+        // }
 
         // gameObject.GetComponent<PathFinder>().active_team = team_names[0];
 
-    }
-
-    void Start()
-    {
-        Map map = GetComponent<Map>();
-        map.graph = this.graph;
-        map.characters = this.agent_names; 
-        map.UpdatePlacementMap();
-        // GetComponent<Map>().graph = this.graph; 
-        
+        // GameObject[] agent_uis = GameObject.FindGameObjectsWithTag("AgentControl");
+        // Debug.Log(agent_uis.Length);
     }
 
     private string PositionToName(Vector3 pos)
@@ -282,6 +251,7 @@ public class FieldConstructor : MonoBehaviour
         path.Reverse();
         return path;
     }
+
 
     public List<string> get_available_goals(string start_node_name, 
                                                   double cutoff_cost)

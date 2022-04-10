@@ -24,7 +24,6 @@ public class Character : MonoBehaviour
     public double GetSpeed()
     {
         var current_speed = attributes.combat_attributes["speed"]; 
-        Debug.Log(current_speed); 
         return current_speed.current; 
     }
 
@@ -46,34 +45,28 @@ public class Character : MonoBehaviour
     public int box_height = 30;
     public int box_width = 75;
 
-    void OnGUI()
-    {
-        if (GUI.Button(new Rect(10, 10, box_width, box_height), "GetSpeed"))
-        {
-            this.GetSpeed();
-        }
-        if (GUI.Button(new Rect(10, 10 + box_height + 5, box_width, box_height), "UseSpeed"))
-        {
-            this.UseSpeed();
-            this.GetSpeed();
-        }
-        if (GUI.Button(new Rect(10, 10 + 2 * (box_height + 5), box_width, box_height), "ResetSpeed"))
-        {
-            this.ResetSpeed();
-            this.GetSpeed();
-        }
-        // if (GUI.Button(new Rect(10, 10 + 3 * (box_height + 5), box_width, box_height), "Move"))
-        // {
-        //     this.ResetSpeed();
-        //     this.GetSpeed();
-        // }
-    }
-
-    // How to track speed while moving  
-
-
-    public string start_tile_name_ = ""; 
-    public string goal_tile_name_ = ""; 
+    // void OnGUI()
+    // {
+    //     if (GUI.Button(new Rect(10, 10, box_width, box_height), "GetSpeed"))
+    //     {
+    //         this.GetSpeed();
+    //     }
+    //     if (GUI.Button(new Rect(10, 10 + box_height + 5, box_width, box_height), "UseSpeed"))
+    //     {
+    //         this.UseSpeed();
+    //         this.GetSpeed();
+    //     }
+    //     if (GUI.Button(new Rect(10, 10 + 2 * (box_height + 5), box_width, box_height), "ResetSpeed"))
+    //     {
+    //         this.ResetSpeed();
+    //         this.GetSpeed();
+    //     }
+    //     // if (GUI.Button(new Rect(10, 10 + 3 * (box_height + 5), box_width, box_height), "Move"))
+    //     // {
+    //     //     this.ResetSpeed();
+    //     //     this.GetSpeed();
+    //     // }
+    // }
 
     public void Move(string start_tile_name, string goal_tile_name) 
     {

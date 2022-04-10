@@ -133,7 +133,6 @@ public class PathFinder : MonoBehaviour
                     field_constructor.graph[goal_tile.name].occupant = agent;
                     field_constructor.graph[start_tile.name].occupant = null;
 
-                    FieldEventManager.TriggerEvent("turn_end");
                     DrawArrow(tile_path);
                     CleanUpTiles(true, true);
                 }

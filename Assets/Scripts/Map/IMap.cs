@@ -1,138 +1,37 @@
+using System;   
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using UnityEngine;
+using PriorityQueue;
+using System.IO;
+using System.Linq;
 
-public class IMap : MonoBehaviour
+
+public abstract class IMap : MonoBehaviour
 {
-    FieldConstructor map; 
-    // Start is called before the first frame update
-    public string goal_tile; 
+    public Dictionary<string, Node> graph; 
+    public List<string> characters;
 
-    void Start()
-    {
-        map = GetComponent<FieldConstructor>(); 
-    }
+    // Abstract Methods
+    public abstract List<string> GetPath(string start_tile_name, string goal_tile_name);
+    public abstract void GetPathPoints(string start_tile_name, string goal_tile_name);
+    public abstract void GetMovementPathCost(List<string> path);
+    public abstract void GetTilesInRange(string origin_tile_name, int range);
 
-    public List<string> available_goals = new List<string>();
-    public List<string> target_goals = new List<string>();
+    public abstract List<string> GetCharacterMovement(string character_name);
+    public abstract void GetCharacterMovement(string character, double speed);
+    public abstract void GetCharacterAttackRange(string character);
 
-
-    public void ShowCharacterSpeed(string character_name)
-    { 
-        string tile_name = map.GetCharacterPlacement(character_name);
-        Character character = GameObject.Find(character_name).GetComponent<Character>(); 
-        double current_speed = character.GetSpeed(); 
-        
-        GameObject start_tile = GameObject.Find(tile_name);
-        start_tile.GetComponent<Renderer>().material.color = Color.yellow; 
-        
-        (available_goals, target_goals) = map.get_available_goals_and_targets(start_tile.name, 
-                                                                                current_speed, 
-                                                                                5.0);
-        
-        foreach(string available_goal_name in available_goals)
-        {
-            GameObject available_goal_tile = GameObject.Find(available_goal_name);
-            available_goal_tile.GetComponent<Renderer>().material.color = Color.blue;
-        }
-        foreach(string target_goal_name in target_goals)
-        {
-            GameObject target_goal_tile = GameObject.Find(target_goal_name);
-            target_goal_tile.GetComponent<Renderer>().material.color = Color.red;
-        }
-    }
-
-    public void MoveCharacterToGoal(string character_name, string goal_tile_name)
-    {
-        if(!map.graph.ContainsKey(goal_tile_name) || !available_goals.Contains(goal_tile_name))
-        {
-            return;
-        } 
-
-        string start_tile_name = map.GetCharacterPlacement(character_name);
-
-        List<string> path = map.GetPath(start_tile_name, goal_tile_name);
-
-        List<Vector3> tile_path = new List<Vector3>();
-        Character character = GameObject.Find(character_name).GetComponent<Character>(); 
-        foreach(string path_tile_name in path )
-        {
-            
-            tile_path.Add(GameObject.Find(path_tile_name).transform.position);
-        }
-
-        GameObject agent = map.graph[start_tile_name].occupant;
-        agent.GetComponent<AgentHandler>().GeneratePathTrajectory(tile_path);
-
-
-        
-        map.placements[character_name] = goal_tile_name;
-        map.graph[goal_tile_name].occupant = agent;
-        map.graph[start_tile_name].occupant = null;
+    public abstract string GetCharacterLocation(string character_name);
+    public abstract void GetAllCharacters();
+    public abstract void GetCharacterFromTeam();
+    public abstract void MoveCharacterToTile(string character_name, string new_tile_name);
     
-        CleanUpShownTiles();
-        ShowCharacterSpeed(character_name);
+    public abstract void MarkTile(string tile_name, string mark);
+    public abstract void MarkTiles(List<string> tiles, string mark);
 
-    }
+    public abstract void ShowPath(List<string> path);
 
-    public void CleanUpShownTiles()
-    {
-        // Clean up goal tiles
-        foreach(string available_goal_name in available_goals)
-        {
-            GameObject available_goal_tile = GameObject.Find(available_goal_name);
-            available_goal_tile.GetComponent<Renderer>().material.color = Color.white;
-        }
-        available_goals.Clear();
-
-        foreach(string target_goal_name in target_goals)
-        {
-            GameObject target_goal_tile = GameObject.Find(target_goal_name);
-            target_goal_tile.GetComponent<Renderer>().material.color = Color.white;
-        }
-        target_goals.Clear();
-    }
-
-    void Update()
-    {
-        if (Input.GetMouseButtonDown(0)) {
-            CastRay();
-        }       
-    }
-    public string current_character; 
-    string selected_tile = "";
-    void CastRay()
-    {
-        // RaycastHit hit;
-        // Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        // if(Physics.Raycast(ray, out hit ))
-        // {
-        //     string tile_name = hit.collider.gameObject.name; 
-        //     this.goal_tile = tile_name; 
-        //     Debug.Log("Ray casted on tile : " + tile_name);
-        // }
-        // RaycastHit hit;
-        // Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        // if(Physics.Raycast(ray, out hit ))
-        // {
-        //     if (selected_tile.Equals(hit.collider.gameObject.name))
-        //     {
-        //         if(map.graph.ContainsKey(selected_tile) && 
-        //            available_goals.Contains(selected_tile))
-        //         {
-        //             this.MoveCharacterToGoal(current_character, selected_tile);
-        //         }
-        //         selected_tile = "";
-        //     }
-        //     else
-        //     {
-        //         selected_tile = hit.collider.gameObject.name; 
-        //     }
-        //     // {
-
-        //     // }
-        // }
-    }
-
-
+    protected abstract string GetTileName(); 
 }

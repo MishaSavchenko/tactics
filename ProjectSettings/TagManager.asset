@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Agent
   - AgentControl
+  - Tile
   layers:
   - Default
   - TransparentFX
