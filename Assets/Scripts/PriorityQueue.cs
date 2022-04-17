@@ -49,5 +49,16 @@ namespace PriorityQueue
         {
             return _pq[index].Item2;
         }
+
+        public List<U> GetList()
+        {
+            List<U> queue_list = new List<U>();
+            foreach(var ele in _pq)
+            {
+                queue_list.Add(ele.Item2);
+            }
+            return queue_list;
+        }
+
     }
 }

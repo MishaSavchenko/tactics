@@ -38,7 +38,6 @@ class Map : IMap
             int random_goal = UnityEngine.Random.Range(0, tiles.Length);
 
             List<string> res = GetPath(tiles[random_start].name, tiles[random_goal].name);
-            last_path_ = res;
             ShowPath(res); 
         }
 
@@ -127,6 +126,8 @@ class Map : IMap
         }
         path.Add(start_node_name);
         path.Reverse();
+
+        last_path_ = path; 
         return path;
     }
 
@@ -242,6 +243,16 @@ class Map : IMap
     public override void GetAllCharacters()
     {
     }
+
+    public List<string> GetAllCharacterNames()
+    {
+        List<string> character_names = new List<string>(); 
+        foreach(KeyValuePair<string, string> kvp in placement_map)
+        {
+            character_names.Add(kvp.Key);
+        }
+        return character_names;
+    }
     
     public override void GetCharacterFromTeam()
     {
@@ -255,6 +266,7 @@ class Map : IMap
         {
             new_tile.occupant = graph[current_tile_name].occupant;
             graph[current_tile_name].occupant = null;
+            placement_map[character_name] = new_tile_name;
         }
         else
         {
@@ -309,9 +321,23 @@ class Map : IMap
         MarkTiles(path, "");
     }
 
+    public void CleanUpLastPath()
+    {
+        if (last_path_ != null)
+        {
+            MarkTiles(last_path_, "");
+        }
+    }
+
     protected override string GetTileName(){
         return "tile_name";
     }
+
+    public bool IsTileOccupied(string tile_name)
+    {
+        return graph[tile_name].occupant == null;
+    }
+    
 
 
 }

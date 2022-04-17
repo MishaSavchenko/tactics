@@ -12,6 +12,11 @@ public class CameraMovement : MonoBehaviour
         _camera = GameObject.Find("Main Camera").GetComponent<Camera>();
     }
 
+    public void CenterCameraOn(Vector3 position)
+    {
+        _camera.transform.position = position;
+    }
+
     public float speed = 5.0f;
     void Update()
     {
