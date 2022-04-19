@@ -19,6 +19,7 @@ class Map : IMap
     private List<string> last_path_;
     private List<string> last_movement_; 
 
+
     void OnGUI()
     {
         int width = 100; 
@@ -65,6 +66,22 @@ class Map : IMap
         // {
         //     MarkTiles(last_movement_, "default");
         // }
+    }
+
+    public List<string> ShowCharacterSpeed(string character_name)
+    {   
+        List<string> available_goals = GetCharacterMovement(character_name);
+        last_movement_ = available_goals;
+        MarkTiles(available_goals, "movement");
+        return available_goals;
+    }
+
+    public void CleanCharacterSpeed()
+    {
+        if (last_movement_ != null)
+        {
+            MarkTiles(last_movement_, "default");
+        }
     }
 
     private Dictionary<string, string> placement_map = new Dictionary<string, string>();
@@ -335,7 +352,7 @@ class Map : IMap
 
     public bool IsTileOccupied(string tile_name)
     {
-        return graph[tile_name].occupant == null;
+        return graph[tile_name].occupant != null;
     }
     
 

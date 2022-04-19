@@ -15,10 +15,12 @@ public class TurnManager : MonoBehaviour
 
     public TurnState current_state = TurnState.Nominal; 
 
+    KeypadPath path_interface;
     // Start is called before the first frame update
     void Start()
     {
         map = GameObject.Find("field").GetComponent<Map>();
+        path_interface = GameObject.Find("KeypadPath").GetComponent<KeypadPath>();
         UpdateCharactersCache();
     }
 
@@ -52,17 +54,32 @@ public class TurnManager : MonoBehaviour
         { 
             map.CleanUpLastPath();
             MoveCurrentToTile(goal_tile_name);
+            path_interface.ResetTiles();
         }
 
         y += 25;
         if(GUI.Button(new Rect(x, y, width - 20, 20), "End Turn"))
         { 
-            current_character_index++; 
-            current_character_index = current_character_index % character_order.Count;
-            string current_character = character_order[current_character_index];
-            camera_transform.position = characters[current_character].gameObject.transform.position;
-            current_character_name  = current_character;
+            map.CleanCharacterSpeed();
+            EndTurn();
+            path_interface.path_boundaries = map.ShowCharacterSpeed(current_character_name);
+            string current_character_tile = map.GetCharacterLocation(current_character_name);
+            path_interface.SetupStartTile(current_character_tile);
         }
+    }
+
+    public void SetGoalTile(string new_goal_tile_name)
+    {
+        goal_tile_name = new_goal_tile_name;  
+    }
+
+    public void EndTurn()
+    {
+        current_character_index++; 
+        current_character_index = current_character_index % character_order.Count;
+        string current_character = character_order[current_character_index];
+        camera_transform.position = characters[current_character].gameObject.transform.position;
+        current_character_name  = current_character;
     }
 
     Dictionary<string, Character> characters = new Dictionary<string, Character>();

@@ -8,20 +8,24 @@ public class KeypadPath : MonoBehaviour
 
     void Start()
     {
-        line = this.gameObject.AddComponent<LineRenderer>();
         map_ = GameObject.Find("field").GetComponent<Map>();
+        turn_manager_ = GameObject.Find("TurnManager").GetComponent<TurnManager>();
     }
 
     GameObject start_tile = null;
     GameObject goal_tile = null;
     
     GameObject last_tile = null;
+    string? last_tile_name = null;
     GameObject current_tile = null;
 
     List<Vector3> path = new List<Vector3>(); 
     List<string> path_names = new List<string>();
     List<string> last_path_names = new List<string>();
     
+    public List<string> path_boundaries = new List<string>();
+    TurnManager turn_manager_ = null;
+
     void Update()
     {
         if(Input.GetMouseButtonDown(0))
@@ -30,22 +34,30 @@ public class KeypadPath : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if(Physics.Raycast(ray, out hit ))
             {
-                if(start_tile == null && goal_tile == null)
+                // if(start_tile == null && goal_tile == null)
+                // {
+                //     start_tile = hit.collider.gameObject;
+                //     Debug.Log("Start tile : " + start_tile.name);
+                // }
+                if(start_tile != null && goal_tile == null)
                 {
-                    start_tile = hit.collider.gameObject;
-                    Debug.Log("Start tile : " + start_tile.name);
-                }
-                else if(start_tile != null && goal_tile == null)
-                {
+
                     goal_tile = hit.collider.gameObject;
+
+                    if (!path_boundaries.Contains(goal_tile.name))
+                    {
+                        goal_tile = null;
+                    }
+                    else
+                    {
+                        turn_manager_.SetGoalTile(goal_tile.name);
+                    }
+
                     Debug.Log("Goal tile : " + goal_tile.name);
                 }
                 else
                 {
-                    Debug.Log("reseting");
-                    start_tile = null;
-                    goal_tile = null;
-                    last_tile = null;
+                    ResetTiles();
                 }
             }
         }
@@ -58,27 +70,50 @@ public class KeypadPath : MonoBehaviour
             if(Physics.Raycast(ray, out hit ))
             {
                 GameObject new_tile = hit.collider.gameObject;
-
-                if(map_.IsTileOccupied(new_tile.name))
+                if (path_boundaries.Contains(new_tile.name))
                 {
-                    last_path_names = new List<string>(path_names);
-                    path_names = map_.GetPath(start_tile.name, new_tile.name);
-                    path = map_.TilesToPositions(path_names);
-
-                    if(last_tile != new_tile)
+                    FindArrowPath(start_tile.name, new_tile.name);
+                    if(last_tile_name != new_tile.name)
                     {
-                        last_tile = new_tile;
+                        last_tile_name = new_tile.name;
                         if (path.Count != 0 )
                         {
-                            for(int g = 0; g < created_arrows.Count; g++)
-                            {
-                                Destroy(created_arrows[g]);
-                            }
-                            ConstructArrow(path);
+                            DrawArrowPath(new_tile.name);
                         }
                     }
                 }
             }
+        }
+    }
+
+    public void ResetTiles()
+    {
+        Debug.Log("reseting");
+        start_tile = null;
+        goal_tile = null;
+        last_tile = null;
+    }
+
+    public void SetupStartTile(string tile_name)
+    {
+        start_tile = GameObject.Find(tile_name);
+    }
+
+    void DrawArrowPath(string new_tile_name)
+    {
+        for(int g = 0; g < created_arrows.Count; g++)
+        {
+            Destroy(created_arrows[g]);
+        }
+        ConstructArrow(path);
+    }
+
+    void FindArrowPath(string start_tile_name, string goal_tile_name)
+    {
+        if(!map_.IsTileOccupied(goal_tile_name))
+        {
+            path_names = map_.GetPath(start_tile_name, goal_tile_name);
+            path = map_.TilesToPositions(path_names);
         }
     }
 
@@ -167,7 +202,7 @@ public class KeypadPath : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogWarning("Corner arrow rotation math failed");
+                    Debug.LogError("Corner arrow rotation math failed");
                 }
             }
 
