@@ -227,7 +227,7 @@ GameObject:
   - component: {fileID: 882032659}
   - component: {fileID: 882032658}
   m_Layer: 0
-  m_Name: KeypadCurrsor
+  m_Name: KeypadPath
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -245,6 +245,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71483a03976fe0145a879449e6e21e1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  path_boundaries: []
   arrow_goal: {fileID: 919132149155446097, guid: 437c0b050492fa147a8c79c53d6df006, type: 3}
   arrow_line: {fileID: 919132149155446097, guid: c541ab9548fdb684a869def8cf7e8b2d, type: 3}
   arrow_turn_left: {fileID: 919132149155446097, guid: 5a3b9eb21f447b7489b36de2c5945949, type: 3}

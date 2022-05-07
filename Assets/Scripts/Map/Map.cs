@@ -17,8 +17,7 @@ class Map : IMap
     public Color path_goal_color = Color.green;
 
     private List<string> last_path_;
-    private List<string> last_movement_; 
-
+    public List<string> last_movement_; 
 
     void OnGUI()
     {
@@ -61,11 +60,6 @@ class Map : IMap
         {
             MarkTiles(last_movement_, "default");
         }
-
-        // if(GUI.Button(new Rect(20, 160, width, 20), "CLeanCharSpd"))
-        // {
-        //     MarkTiles(last_movement_, "default");
-        // }
     }
 
     public List<string> ShowCharacterSpeed(string character_name)
@@ -76,11 +70,17 @@ class Map : IMap
         return available_goals;
     }
 
+    public void ShowCurrentCharacterSpeed()
+    {
+        MarkTiles(last_movement_, "movement");
+    }
+
     public void CleanCharacterSpeed()
     {
         if (last_movement_ != null)
         {
             MarkTiles(last_movement_, "default");
+            last_movement_ = null;
         }
     }
 
@@ -166,7 +166,8 @@ class Map : IMap
     public override void GetMovementPathCost(List<string> path)
     {
     }
-    
+
+
     public override void GetTilesInRange(string origin_tile_name, int range)
     {
     }
@@ -232,7 +233,7 @@ class Map : IMap
         List<string> available_goals = GetTilesInCost(character_current_tile, char_speed);
         return available_goals; 
     }
-    
+
     public override void GetCharacterMovement(string character, double speed)
     {
     }

@@ -73,13 +73,70 @@ public class TurnManager : MonoBehaviour
         goal_tile_name = new_goal_tile_name;  
     }
 
+    void OnEnable()
+    {
+        TurnGUI.end_turn += EndTurn;
+        KeypadPath.choose_goal_event += MoveCharacterThroughPath;
+    }
+
+    void OnDisable()
+    {
+        TurnGUI.end_turn -= EndTurn;
+        KeypadPath.choose_goal_event += MoveCharacterThroughPath;
+    }
+
+    public void MoveCharacterThroughPath(List<string> found_path_names)
+    {
+        if (characters.ContainsKey(current_character_name))
+        {
+            double path_cost = found_path_names.Count * 5.0;
+
+            string current_tile_name = map.GetCharacterLocation(current_character_name);
+
+            // List<string> path = map.GetPath(current_tile_name, new_tile_name); 
+
+            List<Vector3> path_points = map.TilesToPositions(found_path_names);
+
+            // map.ShowPath(path);
+            map.MoveCharacterToTile(current_character_name, found_path_names[found_path_names.Count - 1]);
+
+
+            GameObject.Find(current_character_name).transform.position = path_points[path_points.Count - 1];
+        }   
+        else
+        {
+            Debug.LogError("Character [ " + current_character_name + " ] doesnt exists");
+        }
+    }
+
     public void EndTurn()
     {
+        // map.CleanCharacterSpeed();
+        if(character_order.Count == 0 )
+        {
+            character_order = GetCharacterOrder();
+        }
         current_character_index++; 
         current_character_index = current_character_index % character_order.Count;
         string current_character = character_order[current_character_index];
         camera_transform.position = characters[current_character].gameObject.transform.position;
         current_character_name  = current_character;
+    }
+
+    bool choose_move_toggle = true; 
+    public void ChooseMove()
+    {
+        if (map.last_movement_ != null)
+        {
+            map.CleanCharacterSpeed();
+            path_interface.path_boundaries = map.ShowCharacterSpeed(current_character_name);
+            string current_character_tile = map.GetCharacterLocation(current_character_name);
+            path_interface.SetupStartTile(current_character_tile);
+        }
+        else
+        {
+            map.CleanCharacterSpeed();
+        }
     }
 
     Dictionary<string, Character> characters = new Dictionary<string, Character>();
@@ -93,7 +150,6 @@ public class TurnManager : MonoBehaviour
             characters[go.name] = go.GetComponent<Character>();
         }
     }
-
 
     public List<string> GetCharacterOrder()
     {
@@ -134,6 +190,17 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-
-
+    enum TurnMode : uint
+    {
+        Movement = 0, 
+        Action = 1,
+        BonusAction = 2,
+        EndTurn = 3 
+    }
+    TurnMode current_mode; 
+    
+    void ChangeModeToMovemnt()
+    {
+        current_mode = TurnMode.Movement;
+    } 
 }

@@ -6,11 +6,36 @@ public class KeypadPath : MonoBehaviour
 {
     private Map map_;
 
-    void Start()
+    public delegate void ChooseGoalEvent (List<string> found_path_names);
+	public static event ChooseGoalEvent choose_goal_event;
+    
+    void OnEnable()
     {
         map_ = GameObject.Find("field").GetComponent<Map>();
         turn_manager_ = GameObject.Find("TurnManager").GetComponent<TurnManager>();
+
+        choose_goal_event += ChooseGoal;
+
     }
+
+    void OnDisable()
+    {
+        choose_goal_event -= ChooseGoal;
+    }
+    // start_tile and path_boudaries mhust be assined by an outside entity 
+
+    void ChooseGoal(List<string> found_path_names )
+    {
+        // Clean up path 
+
+        foreach(string fpn in found_path_names)
+        {
+            Debug.Log(fpn);
+        }
+        DestroyArrowPath();
+        ResetTiles();
+    }
+
 
     GameObject start_tile = null;
     GameObject goal_tile = null;
@@ -41,19 +66,19 @@ public class KeypadPath : MonoBehaviour
                 // }
                 if(start_tile != null && goal_tile == null)
                 {
-
                     goal_tile = hit.collider.gameObject;
-
                     if (!path_boundaries.Contains(goal_tile.name))
                     {
                         goal_tile = null;
                     }
                     else
                     {
-                        turn_manager_.SetGoalTile(goal_tile.name);
-                    }
+                        // turn_manager_.SetGoalTile(goal_tile.name);
 
-                    Debug.Log("Goal tile : " + goal_tile.name);
+
+                        choose_goal_event?.Invoke(path_names);
+                    }
+                    // Debug.Log("Goal tile : " + goal_tile.name);
                 }
                 else
                 {
@@ -88,7 +113,6 @@ public class KeypadPath : MonoBehaviour
 
     public void ResetTiles()
     {
-        Debug.Log("reseting");
         start_tile = null;
         goal_tile = null;
         last_tile = null;
@@ -101,11 +125,16 @@ public class KeypadPath : MonoBehaviour
 
     void DrawArrowPath(string new_tile_name)
     {
+        DestroyArrowPath();
+        ConstructArrow(path);
+    }
+
+    void DestroyArrowPath()
+    {
         for(int g = 0; g < created_arrows.Count; g++)
         {
             Destroy(created_arrows[g]);
         }
-        ConstructArrow(path);
     }
 
     void FindArrowPath(string start_tile_name, string goal_tile_name)
