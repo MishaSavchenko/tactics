@@ -15,7 +15,7 @@ public class TurnGUI : MonoBehaviour
     {   
         GetChildrenRecursive(0, this.gameObject);
 
-        TurnOffAllButtons();
+        // TurnOffAllButtons();
         // SetLayer(0, true);
         // right_click_tracker = true;
     }
@@ -122,19 +122,19 @@ public class TurnGUI : MonoBehaviour
     bool right_click_tracker = true;
     void Update()
     {
-        if (Input.GetMouseButtonDown(1))
-        {   
-            this.gameObject.GetComponent<RectTransform>().anchoredPosition  = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+        // if (Input.GetMouseButtonDown(1))
+        // {   
+        //     this.gameObject.GetComponent<RectTransform>().anchoredPosition  = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
             
-            Debug.Log(" right click tracker " + right_click_tracker);
+        //     Debug.Log(" right click tracker " + right_click_tracker);
         
-            if(!right_click_tracker)
-            {
-                HideGui();
-            }
+        //     if(!right_click_tracker)
+        //     {
+        //         HideGui();
+        //     }
             
-            SetLayer(0, right_click_tracker);   
-            right_click_tracker = !right_click_tracker;
-        }
+        //     SetLayer(0, right_click_tracker);   
+        //     right_click_tracker = !right_click_tracker;
+        // }
     }
 }

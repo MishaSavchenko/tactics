@@ -19,48 +19,48 @@ class Map : IMap
     private List<string> last_path_;
     public List<string> last_movement_; 
 
-    void OnGUI()
-    {
-        int width = 100; 
+    // void OnGUI()
+    // {
+    //     int width = 100; 
 
-        // Make a background box
-        GUI.Box(new Rect(10,10,120,200), "Map Debug");
+    //     // Make a background box
+    //     GUI.Box(new Rect(10,10,120,200), "Map Debug");
 
-        if(GUI.Button(new Rect(20,40, width, 20), "GetPath"))
-        {
-            if (last_path_ != null)
-            {
-                CleanUpPath(last_path_); 
-            }
-            GameObject[] tiles = GameObject.FindGameObjectsWithTag("Tile");
+    //     if(GUI.Button(new Rect(20,40, width, 20), "GetPath"))
+    //     {
+    //         if (last_path_ != null)
+    //         {
+    //             CleanUpPath(last_path_); 
+    //         }
+    //         GameObject[] tiles = GameObject.FindGameObjectsWithTag("Tile");
 
-            int random_start = UnityEngine.Random.Range(0, tiles.Length);
-            int random_goal = UnityEngine.Random.Range(0, tiles.Length);
+    //         int random_start = UnityEngine.Random.Range(0, tiles.Length);
+    //         int random_goal = UnityEngine.Random.Range(0, tiles.Length);
 
-            List<string> res = GetPath(tiles[random_start].name, tiles[random_goal].name);
-            ShowPath(res); 
-        }
+    //         List<string> res = GetPath(tiles[random_start].name, tiles[random_goal].name);
+    //         ShowPath(res); 
+    //     }
 
-        if(GUI.Button(new Rect(20,70, width, 20), "CleanPath"))
-        {
-            if (last_path_ != null)
-            {
-                CleanUpPath(last_path_); 
-            }
-        }
+    //     if(GUI.Button(new Rect(20,70, width, 20), "CleanPath"))
+    //     {
+    //         if (last_path_ != null)
+    //         {
+    //             CleanUpPath(last_path_); 
+    //         }
+    //     }
 
-        if(GUI.Button(new Rect(20,100, width, 20), "ShowCharSpd"))
-        {
-            List<string> available_goals = GetCharacterMovement("Saera");
-            last_movement_ = available_goals;
-            MarkTiles(available_goals, "movement");
-        }
+    //     if(GUI.Button(new Rect(20,100, width, 20), "ShowCharSpd"))
+    //     {
+    //         List<string> available_goals = GetCharacterMovement("Saera");
+    //         last_movement_ = available_goals;
+    //         MarkTiles(available_goals, "movement");
+    //     }
         
-        if(GUI.Button(new Rect(20,130, width, 20), "CLeanCharSpd"))
-        {
-            MarkTiles(last_movement_, "default");
-        }
-    }
+    //     if(GUI.Button(new Rect(20,130, width, 20), "CLeanCharSpd"))
+    //     {
+    //         MarkTiles(last_movement_, "default");
+    //     }
+    // }
 
     public List<string> ShowCharacterSpeed(string character_name)
     {   

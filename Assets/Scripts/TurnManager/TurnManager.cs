@@ -27,46 +27,46 @@ public class TurnManager : MonoBehaviour
     public List<string> character_order;
     int current_character_index = 0;
 
-    void OnGUI()
-    {
-        // Make a background box
-        float x = 10f;
-        float y = 220f; 
-        float width = 120f;
-        float height = 200f;
-        GUI.Box(new Rect(x, y, width, height), "Turn Manager Debug");
+    // void OnGUI()
+    // {
+    //     // Make a background box
+    //     float x = 10f;
+    //     float y = 220f; 
+    //     float width = 120f;
+    //     float height = 200f;
+    //     GUI.Box(new Rect(x, y, width, height), "Turn Manager Debug");
 
-        x += 10; 
-        y += 25;
-        if(GUI.Button(new Rect(x, y, width - 20, 20), "GetCharacterOrder"))
-        { 
-            character_order = GetCharacterOrder();
-            string co_str = "";
-            foreach(string co in character_order)
-            {
-                co_str += " --> " + co;
-            }
-            Debug.Log(co_str);
-        }
+    //     x += 10; 
+    //     y += 25;
+    //     if(GUI.Button(new Rect(x, y, width - 20, 20), "GetCharacterOrder"))
+    //     { 
+    //         character_order = GetCharacterOrder();
+    //         string co_str = "";
+    //         foreach(string co in character_order)
+    //         {
+    //             co_str += " --> " + co;
+    //         }
+    //         Debug.Log(co_str);
+    //     }
 
-        y += 25;
-        if(GUI.Button(new Rect(x, y, width - 20, 20), "MoveCharToGoal"))
-        { 
-            map.CleanUpLastPath();
-            MoveCurrentToTile(goal_tile_name);
-            path_interface.ResetTiles();
-        }
+    //     y += 25;
+    //     if(GUI.Button(new Rect(x, y, width - 20, 20), "MoveCharToGoal"))
+    //     { 
+    //         map.CleanUpLastPath();
+    //         MoveCurrentToTile(goal_tile_name);
+    //         path_interface.ResetTiles();
+    //     }
 
-        y += 25;
-        if(GUI.Button(new Rect(x, y, width - 20, 20), "End Turn"))
-        { 
-            map.CleanCharacterSpeed();
-            EndTurn();
-            path_interface.path_boundaries = map.ShowCharacterSpeed(current_character_name);
-            string current_character_tile = map.GetCharacterLocation(current_character_name);
-            path_interface.SetupStartTile(current_character_tile);
-        }
-    }
+    //     y += 25;
+    //     if(GUI.Button(new Rect(x, y, width - 20, 20), "End Turn"))
+    //     { 
+    //         map.CleanCharacterSpeed();
+    //         EndTurn();
+    //         path_interface.path_boundaries = map.ShowCharacterSpeed(current_character_name);
+    //         string current_character_tile = map.GetCharacterLocation(current_character_name);
+    //         path_interface.SetupStartTile(current_character_tile);
+    //     }
+    // }
 
     public void SetGoalTile(string new_goal_tile_name)
     {
